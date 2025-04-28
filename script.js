@@ -84,7 +84,7 @@ function drop(ev) {
 
     const playerName = draggedElement.innerText.trim();
 
-    // Sahada zaten var mı kontrol
+
     const allOnFieldPlayers = document.querySelectorAll('#field .player-item');
     const alreadyExists = Array.from(allOnFieldPlayers).some(p => p.innerText.replace('×', '').trim() === playerName);
 
@@ -93,12 +93,10 @@ function drop(ev) {
         return;
     }
 
-    // Eğer sahadaysa sadece konum değiştir
     if (draggedElement.classList.contains('onfield')) {
         draggedElement.style.left = (x - 40) + "px";
         draggedElement.style.top = (y - 20) + "px";
     } else {
-        // İlk defa sahaya bırakılıyorsa yeni kopya oluştur
         const playerClone = document.createElement('div');
         playerClone.className = 'player-item onfield';
         playerClone.style.position = "absolute";
@@ -112,18 +110,16 @@ function drop(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
         };
 
-        // Çarpı butonu ekle
         const deleteBtn = document.createElement('span');
         deleteBtn.innerHTML = "×";
         deleteBtn.className = 'delete-btn';
         deleteBtn.onclick = function () {
             playerClone.remove();
 
-            // Silindiğinde liste rengi tekrar eski haline dönsün
+
             const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
             if (originalCard) {
-                originalCard.style.backgroundColor = ''; // eski haline getiriyoruz
-                originalCard.style.color = ''; // yazı rengi de eski hale gelsin
+                originalCard.classList.remove('player-used');
             }
         };
 
@@ -131,11 +127,10 @@ function drop(ev) {
 
         ev.currentTarget.appendChild(playerClone);
 
-        // --- İsim kartını koyu gri yap ---
+
         const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
         if (originalCard) {
-            originalCard.style.backgroundColor = '#aaa'; // koyu gri yapıyoruz
-            originalCard.style.color = 'white'; // yazı rengini beyaz yapıyoruz
+            originalCard.classList.add('player-used');
         }
     }
 }
