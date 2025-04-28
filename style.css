@@ -44,16 +44,36 @@ button:hover {
 
 .player-item {
     background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     min-width: 120px;
     cursor: grab;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: bold;
+}
+
+.player-item:hover {
+    background: #e0f0ff;
+    transform: scale(1.05);
+}
+
+.player-used {
+    background: #888 !important;
+    color: white !important;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.player-used:hover {
+    background: #888 !important;
+    transform: none;
 }
 
 #field {
-    background: url('saha.png') center/cover no-repeat; 
+    background: url('saha.png') center/cover no-repeat;
     width: 600px;
     height: 800px;
     margin: 20px auto;
@@ -61,6 +81,7 @@ button:hover {
     position: relative;
     overflow: hidden;
 }
+
 .delete-btn {
     position: absolute;
     top: -8px;
