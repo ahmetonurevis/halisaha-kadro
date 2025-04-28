@@ -66,7 +66,7 @@ function showMessage(message, type) {
 
     setTimeout(() => {
         messageBox.innerText = '';
-    }, 3000); // 3 saniyede kaybolur
+    }, 3000);
 }
 
 function allowDrop(ev) {
@@ -82,34 +82,60 @@ function drop(ev) {
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
 
+    const playerName = draggedElement.innerText.trim();
+
+    // Sahada zaten var mı kontrol
+    const allOnFieldPlayers = document.querySelectorAll('#field .player-item');
+    const alreadyExists = Array.from(allOnFieldPlayers).some(p => p.innerText.replace('×', '').trim() === playerName);
+
+    if (alreadyExists) {
+        showMessage('Bu oyuncu sahada zaten var!', 'error');
+        return;
+    }
+
+    // Eğer sahadaysa sadece konum değiştir
     if (draggedElement.classList.contains('onfield')) {
-        // Sahadaysa sadece konum değiştir
         draggedElement.style.left = (x - 40) + "px";
         draggedElement.style.top = (y - 20) + "px";
     } else {
-        // İlk defa bırakılıyorsa kopya oluştur
-        const playerClone = draggedElement.cloneNode(true);
-        playerClone.classList.add('onfield');
+        // İlk defa sahaya bırakılıyorsa yeni kopya oluştur
+        const playerClone = document.createElement('div');
+        playerClone.className = 'player-item onfield';
         playerClone.style.position = "absolute";
         playerClone.style.left = (x - 40) + "px";
         playerClone.style.top = (y - 20) + "px";
-        playerClone.id = playerClone.id + "-clone-" + Math.random();
+        playerClone.id = 'clone-' + Math.random();
         playerClone.setAttribute('draggable', 'true');
+        playerClone.innerText = playerName;
 
         playerClone.ondragstart = function (ev) {
             ev.dataTransfer.setData("text", ev.target.id);
         };
 
-        // Silme butonu ekle
+        // Çarpı butonu ekle
         const deleteBtn = document.createElement('span');
         deleteBtn.innerHTML = "×";
         deleteBtn.className = 'delete-btn';
         deleteBtn.onclick = function () {
             playerClone.remove();
+
+            // Silindiğinde liste rengi tekrar eski haline dönsün
+            const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
+            if (originalCard) {
+                originalCard.style.backgroundColor = ''; // eski haline getiriyoruz
+                originalCard.style.color = ''; // yazı rengi de eski hale gelsin
+            }
         };
 
         playerClone.appendChild(deleteBtn);
 
         ev.currentTarget.appendChild(playerClone);
+
+        // --- İsim kartını koyu gri yap ---
+        const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
+        if (originalCard) {
+            originalCard.style.backgroundColor = '#aaa'; // koyu gri yapıyoruz
+            originalCard.style.color = 'white'; // yazı rengini beyaz yapıyoruz
+        }
     }
 }
