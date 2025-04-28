@@ -28,16 +28,45 @@ function loadPlayers() {
 }
 
 function addNewPlayer() {
-    const name = document.getElementById('newPlayerName').value.trim();
+    const nameInput = document.getElementById('newPlayerName');
+    const name = nameInput.value.trim();
+
+    const nameExists = allPlayers.some(player => player.toLowerCase() === name.toLowerCase());
+
     if (!name) {
-        alert('İsim giriniz.');
+        showMessage('Lütfen bir isim girin.', 'error');
+        return;
+    }
+
+    if (nameExists) {
+        showMessage('Bu oyuncu zaten eklenmiş!', 'error');
         return;
     }
 
     allPlayers.push(name);
     loadPlayers();
 
-    document.getElementById('newPlayerName').value = '';
+    nameInput.value = '';
+    showMessage('Oyuncu başarıyla eklendi!', 'success');
+}
+
+function showMessage(message, type) {
+    let messageBox = document.getElementById('messageBox');
+    if (!messageBox) {
+        messageBox = document.createElement('div');
+        messageBox.id = 'messageBox';
+        document.body.insertBefore(messageBox, document.body.firstChild);
+    }
+
+    messageBox.innerText = message;
+    messageBox.style.color = (type === 'error') ? 'red' : 'green';
+    messageBox.style.fontWeight = 'bold';
+    messageBox.style.marginBottom = '10px';
+    messageBox.style.fontSize = '18px';
+
+    setTimeout(() => {
+        messageBox.innerText = '';
+    }, 3000); // 3 saniyede kaybolur
 }
 
 function allowDrop(ev) {
@@ -53,8 +82,8 @@ function drop(ev) {
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
 
-    // Eğer sahadaysa sadece taşı
     if (draggedElement.classList.contains('onfield')) {
+        // Sahadaysa sadece konum değiştir
         draggedElement.style.left = (x - 40) + "px";
         draggedElement.style.top = (y - 20) + "px";
     } else {
@@ -67,6 +96,10 @@ function drop(ev) {
         playerClone.id = playerClone.id + "-clone-" + Math.random();
         playerClone.setAttribute('draggable', 'true');
 
+        playerClone.ondragstart = function (ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        };
+
         // Silme butonu ekle
         const deleteBtn = document.createElement('span');
         deleteBtn.innerHTML = "×";
@@ -76,10 +109,6 @@ function drop(ev) {
         };
 
         playerClone.appendChild(deleteBtn);
-
-        playerClone.ondragstart = function (ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        };
 
         ev.currentTarget.appendChild(playerClone);
     }
