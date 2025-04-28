@@ -53,26 +53,32 @@ function drop(ev) {
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
 
-    // Eğer zaten sahadaysa (class'ı 'onfield' olan), sadece taşı
+    // Eğer sahadaysa sadece taşı
     if (draggedElement.classList.contains('onfield')) {
         draggedElement.style.left = (x - 40) + "px";
         draggedElement.style.top = (y - 20) + "px";
     } else {
-        // İlk defa sahaya bırakılıyorsa, kopya oluştur ve ekle
+        // İlk defa bırakılıyorsa kopya oluştur
         const playerClone = draggedElement.cloneNode(true);
         playerClone.classList.add('onfield');
         playerClone.style.position = "absolute";
         playerClone.style.left = (x - 40) + "px";
         playerClone.style.top = (y - 20) + "px";
-        playerClone.id = playerClone.id + "-clone-" + Math.random(); // ID çakışmaması için
+        playerClone.id = playerClone.id + "-clone-" + Math.random();
         playerClone.setAttribute('draggable', 'true');
+
+        // Silme butonu ekle
+        const deleteBtn = document.createElement('span');
+        deleteBtn.innerHTML = "×";
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = function () {
+            playerClone.remove();
+        };
+
+        playerClone.appendChild(deleteBtn);
 
         playerClone.ondragstart = function (ev) {
             ev.dataTransfer.setData("text", ev.target.id);
-        };
-
-        playerClone.ondblclick = function () {
-            playerClone.remove();
         };
 
         ev.currentTarget.appendChild(playerClone);
