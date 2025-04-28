@@ -25,6 +25,18 @@ function loadPlayers() {
 
         list.appendChild(div);
     });
+    
+    div.ontouchstart = function (ev) {
+    ev.preventDefault(); // Scroll yapmasını engelle
+    const touch = ev.touches[0];
+
+    const mouseEvent = new MouseEvent("mousedown", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+
+    div.dispatchEvent(mouseEvent);
+};
 }
 
 function addNewPlayer() {
@@ -134,3 +146,4 @@ function drop(ev) {
         }
     }
 }
+
