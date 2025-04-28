@@ -61,3 +61,18 @@ button:hover {
     position: relative;
     overflow: hidden;
 }
+.delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 10;
+}
