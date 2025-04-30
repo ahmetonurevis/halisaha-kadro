@@ -117,10 +117,21 @@ function drop(ev) {
 
 function downloadFieldImage() {
     const field = document.getElementById('field');
-    html2canvas(field).then(canvas => {
+
+    // Geçici olarak butonları gizle (buton görsele eklenmesin)
+    const downloadBtn = document.querySelector('.download-btn');
+    downloadBtn.style.display = "none";
+
+    html2canvas(field, {useCORS: true}).then(canvas => {
         const link = document.createElement('a');
         link.download = 'kadro.png';
-        link.href = canvas.toDataURL();
+        link.href = canvas.toDataURL('image/png');
         link.click();
+
+        // Görsel indirildikten sonra butonu geri getir
+        downloadBtn.style.display = "inline-block";
+    }).catch(err => {
+        alert("Bir hata oluştu: " + err);
+        downloadBtn.style.display = "inline-block";
     });
 }
