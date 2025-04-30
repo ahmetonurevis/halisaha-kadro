@@ -1,37 +1,50 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f2f5f9;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f3f7fa;
     margin: 0;
     padding: 20px;
     text-align: center;
 }
 
-h1, h2 {
-    color: #333;
-}
-
-.form-container {
-    margin-bottom: 20px;
+h1 {
+    color: #222;
 }
 
 input {
     padding: 10px;
-    margin: 5px;
-    border: 1px solid #ccc;
     border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 250px;
+    font-size: 16px;
 }
 
 button {
     padding: 10px 20px;
+    margin-left: 8px;
     background-color: #0077cc;
     color: white;
     border: none;
     border-radius: 8px;
+    font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 button:hover {
     background-color: #005fa3;
+}
+
+.download-btn {
+    margin-top: 20px;
+    font-size: 18px;
+    background-color: #10b981;
+    padding: 12px 24px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.download-btn:hover {
+    background-color: #059669;
 }
 
 .player-grid {
@@ -68,7 +81,6 @@ button:hover {
 }
 
 .player-used:hover {
-    background: #888 !important;
     transform: none;
 }
 
@@ -80,6 +92,7 @@ button:hover {
     border: 2px solid #0077cc;
     position: relative;
     overflow: hidden;
+    border-radius: 12px;
 }
 
 .delete-btn {
@@ -96,4 +109,32 @@ button:hover {
     text-align: center;
     cursor: pointer;
     z-index: 10;
+}
+
+@media (max-width: 768px) {
+    #field {
+        width: 90%;
+        height: 500px;
+        background-size: contain;
+    }
+
+    .player-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .player-item {
+        min-width: 80%;
+        font-size: 20px;
+        padding: 15px;
+    }
+
+    input, button {
+        width: 80%;
+        font-size: 18px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
 }
