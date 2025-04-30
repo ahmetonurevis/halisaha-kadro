@@ -23,20 +23,18 @@ function loadPlayers() {
             ev.dataTransfer.setData("text", ev.target.id);
         };
 
+        div.ontouchstart = function (ev) {
+            ev.preventDefault();
+            const touch = ev.touches[0];
+            const mouseEvent = new MouseEvent("mousedown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            div.dispatchEvent(mouseEvent);
+        };
+
         list.appendChild(div);
     });
-    
-    div.ontouchstart = function (ev) {
-    ev.preventDefault(); // Scroll yapmasını engelle
-    const touch = ev.touches[0];
-
-    const mouseEvent = new MouseEvent("mousedown", {
-        clientX: touch.clientX,
-        clientY: touch.clientY
-    });
-
-    div.dispatchEvent(mouseEvent);
-};
 }
 
 function addNewPlayer() {
@@ -46,12 +44,12 @@ function addNewPlayer() {
     const nameExists = allPlayers.some(player => player.toLowerCase() === name.toLowerCase());
 
     if (!name) {
-        showMessage('Lütfen bir isim girin.', 'error');
+        alert('İsim giriniz.');
         return;
     }
 
     if (nameExists) {
-        showMessage('Bu oyuncu zaten eklenmiş!', 'error');
+        alert('Bu oyuncu zaten eklenmiş!');
         return;
     }
 
@@ -59,26 +57,6 @@ function addNewPlayer() {
     loadPlayers();
 
     nameInput.value = '';
-    showMessage('Oyuncu başarıyla eklendi!', 'success');
-}
-
-function showMessage(message, type) {
-    let messageBox = document.getElementById('messageBox');
-    if (!messageBox) {
-        messageBox = document.createElement('div');
-        messageBox.id = 'messageBox';
-        document.body.insertBefore(messageBox, document.body.firstChild);
-    }
-
-    messageBox.innerText = message;
-    messageBox.style.color = (type === 'error') ? 'red' : 'green';
-    messageBox.style.fontWeight = 'bold';
-    messageBox.style.marginBottom = '10px';
-    messageBox.style.fontSize = '18px';
-
-    setTimeout(() => {
-        messageBox.innerText = '';
-    }, 3000);
 }
 
 function allowDrop(ev) {
@@ -95,55 +73,54 @@ function drop(ev) {
     const y = ev.clientY - rect.top;
 
     const playerName = draggedElement.innerText.trim();
-
-
     const allOnFieldPlayers = document.querySelectorAll('#field .player-item');
     const alreadyExists = Array.from(allOnFieldPlayers).some(p => p.innerText.replace('×', '').trim() === playerName);
 
     if (alreadyExists) {
-        showMessage('Bu oyuncu sahada zaten var!', 'error');
+        alert('Bu oyuncu sahada zaten var!');
         return;
     }
 
-    if (draggedElement.classList.contains('onfield')) {
-        draggedElement.style.left = (x - 40) + "px";
-        draggedElement.style.top = (y - 20) + "px";
-    } else {
-        const playerClone = document.createElement('div');
-        playerClone.className = 'player-item onfield';
-        playerClone.style.position = "absolute";
-        playerClone.style.left = (x - 40) + "px";
-        playerClone.style.top = (y - 20) + "px";
-        playerClone.id = 'clone-' + Math.random();
-        playerClone.setAttribute('draggable', 'true');
-        playerClone.innerText = playerName;
+    const playerClone = document.createElement('div');
+    playerClone.className = 'player-item onfield';
+    playerClone.style.position = "absolute";
+    playerClone.style.left = (x - 40) + "px";
+    playerClone.style.top = (y - 20) + "px";
+    playerClone.id = 'clone-' + Math.random();
+    playerClone.setAttribute('draggable', 'true');
+    playerClone.innerText = playerName;
 
-        playerClone.ondragstart = function (ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        };
+    playerClone.ondragstart = function (ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    };
 
-        const deleteBtn = document.createElement('span');
-        deleteBtn.innerHTML = "×";
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.onclick = function () {
-            playerClone.remove();
-
-
-            const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
-            if (originalCard) {
-                originalCard.classList.remove('player-used');
-            }
-        };
-
-        playerClone.appendChild(deleteBtn);
-
-        ev.currentTarget.appendChild(playerClone);
-
-
+    const deleteBtn = document.createElement('span');
+    deleteBtn.innerHTML = "×";
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.onclick = function () {
+        playerClone.remove();
         const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
         if (originalCard) {
-            originalCard.classList.add('player-used');
+            originalCard.classList.remove('player-used');
         }
+    };
+
+    playerClone.appendChild(deleteBtn);
+
+    ev.currentTarget.appendChild(playerClone);
+
+    const originalCard = Array.from(document.querySelectorAll('.player-item')).find(p => p.innerText === playerName && !p.classList.contains('onfield'));
+    if (originalCard) {
+        originalCard.classList.add('player-used');
     }
 }
 
+function downloadFieldImage() {
+    const field = document.getElementById('field');
+    html2canvas(field).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'kadro.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
