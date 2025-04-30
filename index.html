@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Asya Halısaha</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Halı Saha Kadro Kur</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-    <h1> Fantazi Futbol Ekibi </h1>
+    <h1>Halı Saha Kadro Oluştur</h1>
 
     <div class="form-container">
-        <input type="text" id="newPlayerName" placeholder="Yeni Oyuncu Adı">
-        <button onclick="addNewPlayer()">Yeni Oyuncu Ekle</button>
+        <input type="text" id="newPlayerName" placeholder="Yeni Oyuncu İsmi" />
+        <button onclick="addNewPlayer()">Ekle</button>
     </div>
 
-    <h2>Oyuncular</h2>
-    <div id="playerList" class="player-grid"></div>
+    <div class="player-grid" id="playerList"></div>
 
-    <h2>SAHA</h2>
     <div id="field" ondrop="drop(event)" ondragover="allowDrop(event)">
-        
+        <!-- Saha -->
     </div>
 
-    <script src="script.js?v=5"></script>
+    <button class="download-btn" onclick="downloadFieldImage()">📸 Kadroyu Görsel Olarak İndir</button>
+
+    <script src="script.js"></script>
 </body>
 </html>
